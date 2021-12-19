@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import Video from 'react-native-video';
 import { Loader } from './Loader';
-import { IVimeo } from './interfaces/IVimeo.interface';
-import { VimeoService } from './Vimeo.service';
-import { IVimeoResponse } from './interfaces/IVimeoResponse.interface';
+import { IVimeo } from '../interfaces/IVimeo.interface';
+import { VimeoService } from '../Vimeo.service';
+import { IVimeoResponse } from '../interfaces/IVimeoResponse.interface';
+import Controls from './Controls.component';
 
 const initialState = {
   isStarted: false,
   isPlaying: false,
   isEnded: false,
   isMuted: false,
-  isControlsVisible: true,
   progress: 0,
   duration: 0,
+  volume: 1,
 };
 
 export default function Vimeo(props: IVimeo.IVimeoProps) {
@@ -23,7 +24,7 @@ export default function Vimeo(props: IVimeo.IVimeoProps) {
   const [videoInfo, setVideoInfo] = useState({ thumbnail: '', url: '' });
   const [player, setPlayer] = useState(initialState);
   const { width, height, resizeMode } = props;
-  const { isMuted, isStarted, isPlaying } = player;
+  const { isMuted, isStarted, isPlaying, volume } = player;
 
   useEffect(() => {
     if (id) {
@@ -65,54 +66,39 @@ export default function Vimeo(props: IVimeo.IVimeoProps) {
     updateState('isPlaying', false);
   }
 
-  function onMute() {
-    updateState('isMuted', true);
-  }
-
-  function onUnmute() {
-    updateState('isMuted', false);
-  }
-
   if (!videoInfo?.url) {
     return <Loader />;
   }
 
   return (
-    <>
+    <View style={styles.container}>
       <Video
         ref={playerEl}
         style={[styles.video, { width, height }]}
-        paused={!isStarted && !isPlaying}
         muted={isMuted}
-        source={{ uri: videoInfo.url }}
+        paused={!isStarted && !isPlaying}
         resizeMode={resizeMode}
+        source={{ uri: videoInfo.url }}
+        volume={volume}
       />
 
-      <TouchableOpacity onPress={onPlay}>
-        <Text>Play</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={onPause}>
-        <Text>Pause</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={onMute}>
-        <Text>Mute</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={onUnmute}>
-        <Text>Unmute</Text>
-      </TouchableOpacity>
-    </>
+      <Controls
+        onPlay={onPlay}
+        onPause={onPause}
+        updateState={updateState}
+        {...player}
+      />
+    </View>
   );
 }
 
 Vimeo.defaultProps = {
   width: Dimensions.get('window').width,
-  height: 720,
+  height: 240,
   resizeMode: 'contain',
 };
 
 const styles = StyleSheet.create({
+  container: {},
   video: {},
 });

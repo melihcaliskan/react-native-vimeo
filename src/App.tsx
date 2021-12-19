@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView } from 'react-native';
-import Vimeo from './Vimeo';
+import Vimeo from './components/Vimeo.component';
 
 const App: React.FC = () => {
   return (

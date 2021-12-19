@@ -13,7 +13,6 @@ export const VimeoService = {
       `https://player.vimeo.com/video/${id}/config`,
     ).then((res) => res.json());
 
-    console.log(result);
     return result;
   },
 };
