@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import Video from 'react-native-video';
 import { Loader } from './Loader';
-import { IVimeo } from './IVimeo.interface';
+import { IVimeo } from './interfaces/IVimeo.interface';
 import { VimeoService } from './Vimeo.service';
+import { IVimeoResponse } from './interfaces/IVimeoResponse.interface';
 
 const initialState = {
   isStarted: false,
@@ -34,11 +35,14 @@ export default function Vimeo(props: IVimeo.IVimeoProps) {
 
   function fetchVideoInfo() {
     VimeoService.GetDetail(id)
-      .then((res) => {
+      .then((res: IVimeoResponse.IResponseBody) => {
         const defaultCdn = res?.request?.files?.hls.default_cdn;
+
         setVideoInfo({
           thumbnail: res?.video?.thumbs?.base,
-          url: res?.request?.files?.hls.cdns[defaultCdn]?.url,
+          url: res?.request?.files?.hls.cdns[
+            defaultCdn as keyof IVimeoResponse.Cdns
+          ]?.url,
         });
       })
       .catch((err) => {
