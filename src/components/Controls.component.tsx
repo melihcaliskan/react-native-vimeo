@@ -6,11 +6,15 @@ import Colors from '../Colors';
 const OTHER_BUTTONS_ML = 10;
 
 export function Controls(props: IVimeo.IControlsProps) {
-  const { onPlay, onPause, isPlaying, volume, updateState } = props;
+  const { fullScreen, onPlay, onPause, isPlaying, volume, updateState } = props;
 
   function toggleVolume() {
     let newVolume = volume === 1 ? 0 : volume + 0.2;
     updateState('volume', newVolume);
+  }
+
+  function onFullScreen() {
+    updateState('fullScreen', !fullScreen);
   }
 
   function renderVolumeControl() {
@@ -58,7 +62,7 @@ export function Controls(props: IVimeo.IControlsProps) {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={onPause}>
+          <TouchableOpacity onPress={onFullScreen}>
             <Image
               style={styles.fullScreen}
               source={require('../assets/full-screen.png')}

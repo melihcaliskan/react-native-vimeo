@@ -8,6 +8,7 @@ import { IVimeoResponse } from '../interfaces/IVimeoResponse.interface';
 import Controls from './Controls.component';
 
 const initialState = {
+  fullScreen: false,
   isStarted: false,
   isPlaying: false,
   isEnded: false,
@@ -24,7 +25,7 @@ export default function Vimeo(props: IVimeo.IVimeoProps) {
   const [videoInfo, setVideoInfo] = useState({ thumbnail: '', url: '' });
   const [player, setPlayer] = useState(initialState);
   const { width, height, resizeMode } = props;
-  const { isMuted, isStarted, isPlaying, volume } = player;
+  const { fullScreen, isMuted, isStarted, isPlaying, volume } = player;
 
   useEffect(() => {
     if (id) {
@@ -66,6 +67,11 @@ export default function Vimeo(props: IVimeo.IVimeoProps) {
     updateState('isPlaying', false);
   }
 
+  function exitFullScreen() {
+    updateState('fullScreen', false);
+    updateState('isPlaying', false);
+  }
+
   if (!videoInfo?.url) {
     return <Loader />;
   }
@@ -74,12 +80,14 @@ export default function Vimeo(props: IVimeo.IVimeoProps) {
     <View style={styles.container}>
       <Video
         ref={playerEl}
+        fullscreen={fullScreen}
         style={[styles.video, { width, height }]}
         muted={isMuted}
         paused={!isStarted && !isPlaying}
         resizeMode={resizeMode}
         source={{ uri: videoInfo.url }}
         volume={volume}
+        onFullscreenPlayerWillDismiss={exitFullScreen}
       />
 
       <Controls

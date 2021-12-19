@@ -10,6 +10,7 @@ export namespace IVimeo {
   }
 
   export interface IVimeoState {
+    fullScreen: boolean;
     isStarted: boolean;
     isPlaying: boolean;
     isEnded: boolean;
